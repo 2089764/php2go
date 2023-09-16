@@ -14,6 +14,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"golang.org/x/text/cases"
 	"hash/crc32"
 	"html"
 	"io"
@@ -542,11 +543,6 @@ func Strlen(str string) int {
 	return len(str)
 }
 
-// MbStrlen mb_strlen()
-func MbStrlen(str string) int {
-	return utf8.RuneCountInString(str)
-}
-
 // StrRepeat str_repeat()
 func StrRepeat(input string, multiplier int) string {
 	return strings.Repeat(input, multiplier)
@@ -999,6 +995,19 @@ func Soundex(str string) string {
 		sd[small] = '0'
 	}
 	return string(sd)
+}
+
+//////////// Multibyte String Functions ////////////
+
+// MbStrlen mb_strlen()
+func MbStrlen(str string) int {
+	return utf8.RuneCountInString(str)
+}
+
+// MbStrtoupper mb_strtoupper()
+// Make a string uppercase
+func MbStrtoupper(str string) string {
+	return strings.ToUpper(cases.Fold().String(str))
 }
 
 //////////// URL Functions ////////////
@@ -2137,7 +2146,7 @@ func VersionCompare(version1, version2, operator string) bool {
 				}
 			} else if !(p1[0] >= '0' && p1[0] <= '9') && !(p2[0] >= '0' && p2[0] <= '9') { // all digit
 				compare = special(p1, p2)
-			} else { // part is digit
+			} else {
 				if p1[0] >= '0' && p1[0] <= '9' { // is digit
 					compare = special("#N#", p2)
 				} else {
